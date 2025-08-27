@@ -1,0 +1,174 @@
+/* Font Variables */
+:root {
+    --titleFont: "Value Serif Pro", serif;
+    --aiFont: "Andale Mono", monospace;
+    --bodyFont: "Avenir", sans-serif;
+
+    /* Color Variables */
+    --bg-primary: #fdefe6;
+    --accent: #f08e80;
+    --fg-primary: #000000;
+    --bg-secondary: #ffffff;
+    --border: #ebebeb;
+    --bg-invert: #06335d;
+    --fg-invert: #ffffff;
+}
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--bodyFont);
+    font-size: 18px;
+    font-weight: 400;
+    /* Roman */
+    line-height: 120%;
+}
+
+/* Typography Styles - Mobile First */
+h1 {
+    font-family: var(--titleFont);
+    font-size: 24px;
+    font-weight: 700;
+    /* Bold */
+    line-height: 120%;
+}
+
+h2 {
+    font-family: var(--titleFont);
+    font-size: 28px;
+    font-weight: 700;
+    /* Bold */
+    line-height: 120%;
+}
+
+h3 {
+    font-family: var(--bodyFont);
+    font-size: 21px;
+    font-weight: 900;
+    /* Heavy */
+    line-height: 120%;
+}
+
+p {
+    font-family: var(--bodyFont);
+    font-size: 18px;
+    font-weight: 400;
+    /* Roman */
+    line-height: 120%;
+}
+
+.body-large {
+    font-family: var(--bodyFont);
+    font-size: 18px;
+    font-weight: 400;
+    /* Roman */
+    line-height: 120%;
+}
+
+.body-small {
+    font-family: var(--bodyFont);
+    font-size: 14px;
+    font-weight: 400;
+    /* Roman */
+    line-height: 120%;
+}
+
+.ai-thoughts {
+    font-family: var(--aiFont);
+    font-size: 14px;
+    font-weight: 400;
+    /* Regular */
+    line-height: 160%;
+}
+
+.ai-title {
+    font-family: var(--bodyFont);
+    font-size: 18px;
+    font-weight: 900;
+    /* Heavy */
+    line-height: 120%;
+}
+
+.form-label {
+    font-family: var(--bodyFont);
+    font-size: 16px;
+    font-weight: 400;
+    /* Roman */
+    line-height: 100%;
+}
+
+.form-value {
+    font-family: var(--bodyFont);
+    font-size: 16px;
+    font-weight: 400;
+    /* Roman */
+    line-height: 100%;
+}
+
+button {
+    font-family: var(--bodyFont);
+    font-size: 20px;
+    font-weight: 900;
+    /* Heavy */
+    line-height: 100%;
+}
+
+/* Desktop breakpoint */
+@media (min-width: 1024px) {
+    body {
+        font-size: 21px;
+        line-height: 20px;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    h2 {
+        font-size: 21px;
+    }
+
+    h3 {
+        font-size: 28px;
+    }
+
+    p {
+        font-size: 21px;
+        line-height: 20px;
+    }
+
+    .body-large {
+        font-size: 28px;
+    }
+
+    .body-small {
+        font-size: 14px;
+    }
+
+    .ai-thoughts {
+        font-size: 12px;
+    }
+
+    .ai-title {
+        font-size: 18px;
+    }
+
+    .form-label {
+        font-size: 21px;
+        line-height: 120%;
+    }
+
+    .form-value {
+        font-size: 21px;
+        line-height: 20px;
+    }
+
+    button {
+        font-size: 24px;
+    }
+}
