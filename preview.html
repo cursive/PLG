@@ -12,23 +12,50 @@
 <body>
     <div class="page-container">
         <h1>Here's what Slanted Door's membership program could look like</h1>
+
+        <!-- Interaction Controls -->
+        <div class="controls">
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="interaction" value="auto" checked>
+                    Auto-scroll
+                </label>
+                <label>
+                    <input type="radio" name="interaction" value="hijack">
+                    Scroll hijacking
+                </label>
+            </div>
+
+            <div class="auto-controls" id="auto-controls">
+                <label>Start delay (ms): <input type="number" id="start-delay" value="1000"></label>
+                <label>Interval (ms): <input type="number" id="interval" value="2000"></label>
+                <label>Animation speed (ms): <input type="number" id="speed" value="1000"></label>
+                <label>Easing:
+                    <select id="easing">
+                        <option value="linear">Linear</option>
+                        <option value="ease-in-out">Ease In Out</option>
+                        <option value="ease-out">Ease Out</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+
         <div class="preview">
             <div class="visual">
 
-                <div class="mask">
+                <div class="mask" id="scrollable-mask">
                     <img src="images/mock.png" class="mock">
                 </div>
                 <img src="images/phone.png" alt="" class="phone">
 
             </div>
             <div class="text">
-                <h3>Your storefront,<br />already taking shape</h3>
-                <p class="body">We’ve auto-generated a draft of your membership offering using your existing content.
-                <p class="body">It’s optimized for clarity, conversion, and brand alignment—so guests know exactly what
-                    they’re
+                <h3>Your storefront, already taking shape</h3>
+                <p class="body">We've auto-generated a draft of your membership offering using your existing content.
+                <p class="body">It's optimized for clarity, conversion, and brand alignment—so guests know exactly what
+                    they're
                     signing up for.</p>
             </div>
-
         </div>
         <div class="numbers">
             <img src="images/numbers.png" alt="">
@@ -41,6 +68,147 @@
         </div>
     </div>
 
+    <script>
+        // Interaction system
+        const mask = document.querySelector('#scrollable-mask');
+        const mock = document.querySelector('.mock');
+        const preview = document.querySelector('.preview');
+        const controls = document.querySelector('.controls');
+        const autoControls = document.querySelector('#auto-controls');
+
+        let currentMode = 'auto';
+        let autoScrollInterval;
+        let isHijacking = false;
+        let scrollDirection = 1; // 1 for down, -1 for up
+        let animationId;
+
+        // Prevent image dragging
+        mock.addEventListener('dragstart', (e) => e.preventDefault());
+        mock.addEventListener('mousedown', (e) => e.preventDefault());
+
+        // Radio button controls
+        document.querySelectorAll('input[name="interaction"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                currentMode = e.target.value;
+                if (currentMode === 'auto') {
+                    startAutoScroll();
+                    enablePageScroll();
+                } else {
+                    stopAutoScroll();
+                    setupScrollHijacking();
+                }
+            });
+        });
+
+        // Auto-scroll functionality
+        function startAutoScroll() {
+            const startDelay = parseInt(document.getElementById('start-delay').value);
+            const interval = parseInt(document.getElementById('interval').value);
+
+            setTimeout(() => {
+                autoScrollInterval = setInterval(autoScroll, interval);
+            }, startDelay);
+        }
+
+        function stopAutoScroll() {
+            if (autoScrollInterval) {
+                clearInterval(autoScrollInterval);
+            }
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        function autoScroll() {
+            const speed = parseInt(document.getElementById('speed').value);
+            const easing = document.getElementById('easing').value;
+            const maxScroll = mask.scrollHeight - mask.clientHeight;
+
+            let targetScroll = mask.scrollTop + (500 * scrollDirection);
+
+            // Reverse direction at boundaries
+            if (targetScroll >= maxScroll) {
+                targetScroll = maxScroll;
+                scrollDirection = -1;
+            } else if (targetScroll <= 0) {
+                targetScroll = 0;
+                scrollDirection = 1;
+            }
+
+            animateScroll(mask.scrollTop, targetScroll, speed, easing);
+        }
+
+        function animateScroll(from, to, duration, easing) {
+            const startTime = Date.now();
+
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                let easedProgress;
+                switch (easing) {
+                    case 'ease-in-out':
+                        easedProgress = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+                        break;
+                    case 'ease-out':
+                        easedProgress = 1 - Math.pow(1 - progress, 3);
+                        break;
+                    default:
+                        easedProgress = progress;
+                }
+
+                mask.scrollTop = from + (to - from) * easedProgress;
+
+                if (progress < 1) {
+                    animationId = requestAnimationFrame(animate);
+                }
+            }
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // Scroll hijacking functionality
+        function setupScrollHijacking() {
+            let previewTop = preview.offsetTop;
+            let isInHijackZone = false;
+
+            window.addEventListener('scroll', () => {
+                if (currentMode !== 'hijack') return;
+
+                const scrollY = window.scrollY;
+                const previewRect = preview.getBoundingClientRect();
+
+                if (previewRect.top <= 0 && !isInHijackZone) {
+                    // Enter hijack zone
+                    isInHijackZone = true;
+                    disablePageScroll();
+                    window.scrollTo(0, previewTop);
+                } else if (isInHijackZone) {
+                    // In hijack zone - move mock instead
+                    const maxScroll = mask.scrollHeight - mask.clientHeight;
+                    const scrollProgress = Math.min(scrollY - previewTop, maxScroll);
+                    mask.scrollTop = scrollProgress;
+
+                    if (scrollProgress >= maxScroll) {
+                        // Exit hijack zone
+                        isInHijackZone = false;
+                        enablePageScroll();
+                    }
+                }
+            });
+        }
+
+        function disablePageScroll() {
+            document.body.style.overflow = 'hidden';
+        }
+
+        function enablePageScroll() {
+            document.body.style.overflow = '';
+        }
+
+        // Initialize with auto-scroll
+        startAutoScroll();
+    </script>
 </body>
 
 </html>
