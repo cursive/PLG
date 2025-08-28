@@ -21,13 +21,7 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: var(--bodyFont);
-    font-size: 18px;
-    font-weight: 400;
-    /* Roman */
-    line-height: 120%;
-}
+
 
 /* Typography Styles - Mobile First */
 h1 {
@@ -55,6 +49,10 @@ h3 {
 }
 
 p {
+    padding-bottom: 24px;
+}
+
+.body {
     font-family: var(--bodyFont);
     font-size: 18px;
     font-weight: 400;
