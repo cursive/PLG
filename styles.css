@@ -54,7 +54,7 @@ p {
 
 .body {
     font-family: var(--bodyFont);
-    font-size: 18px;
+    font-size: 21px;
     font-weight: 400;
     /* Roman */
     line-height: 120%;

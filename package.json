@@ -1,0 +1,23 @@
+{
+  "name": "plg",
+  "version": "1.0.0",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cursive/PLG.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cursive/PLG/issues"
+  },
+  "homepage": "https://github.com/cursive/PLG#readme",
+  "description": "",
+  "dependencies": {
+    "perfect-scrollbar": "^1.5.6"
+  }
+}

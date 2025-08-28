@@ -1,0 +1,161 @@
+/* Page Container */
+
+body {
+    background-color: var(--bg-primary);
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Left Column */
+.left-column {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Right Column */
+.right-column {
+    width: 100%;
+    flex: 1;
+}
+
+/* Section Styles with Unique Background Colors */
+.logo {}
+
+.title {}
+
+.description {}
+
+.screenshot {
+    background-color: #96ceb4;
+    /* Green */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.screenshot img {
+    max-width: 100%;
+    height: auto;
+}
+
+.ai-box {
+    background-color: #feca57;
+    /* Yellow */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 100;
+
+    border-top: 4px solid transparent;
+    background:
+        linear-gradient(45deg, #EDB151, #EA536A, #D999FA, #72B0F8, #C0CACB) border-box,
+        black padding-box;
+    width: 600px;
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25);
+
+    .content {
+        background-color: var(--bg-secondary);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+/* Desktop breakpoint */
+@media (min-width: 1024px) {
+    .page-container {
+        flex-direction: row;
+        width: 1280px;
+        height: 700px;
+        margin: 0 auto;
+        padding: 48px;
+        gap: 48px;
+        overflow: hidden;
+    }
+
+    .left-column {
+        width: 50%;
+        height: 100%;
+
+        .logo {
+            padding-bottom: 24px;
+        }
+
+        h1 {
+            padding-bottom: 24px;
+        }
+
+        p {
+            padding-bottom: 64px;
+        }
+    }
+
+    .ai-box {
+        height: 100%;
+        border-radius: 24px;
+        border: 4px solid transparent;
+
+        .content {
+            border-radius: 20px;
+            padding: 32px;
+        }
+    }
+
+    .right-column {
+        border-radius: 24px;
+        overflow: hidden;
+        width: 50%;
+        height: 100%;
+    }
+
+    .screenshot {
+        height: 100%;
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    .ai-box {
+        position: static;
+        width: auto;
+        z-index: auto;
+
+        .content {
+            padding-bottom: 12px;
+        }
+    }
+
+    .ai-thoughts {
+        flex: 1;
+    }
+
+    .revline {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        padding-top: 8px;
+        padding-bottom: 8px;
+
+        p {
+            color: var(--fg-primary);
+            margin: 0;
+            padding-bottom: 0;
+        }
+
+        img {
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    }
+}
