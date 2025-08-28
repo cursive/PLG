@@ -108,3 +108,82 @@ body {
 
     }
 }
+
+/* Modal and Controls */
+.interaction-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--bodyFont);
+    font-size: 14px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: var(--bg-secondary);
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: var(--fg-primary);
+}
+
+.modal h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--fg-primary);
+}
+
+.radio-group {
+    margin-bottom: 20px;
+}
+
+.radio-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--fg-primary);
+}
+
+.auto-controls label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--fg-primary);
+}
+
+.auto-controls input,
+.auto-controls select {
+    margin-left: 10px;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+}

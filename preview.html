@@ -13,30 +13,38 @@
     <div class="page-container">
         <h1>Here's what Slanted Door's membership program could look like</h1>
 
-        <!-- Interaction Controls -->
-        <div class="controls">
-            <div class="radio-group">
-                <label>
-                    <input type="radio" name="interaction" value="auto" checked>
-                    Auto-scroll
-                </label>
-                <label>
-                    <input type="radio" name="interaction" value="hijack">
-                    Scroll hijacking
-                </label>
-            </div>
+        <!-- Interaction Button -->
+        <button class="interaction-btn" onclick="toggleModal()">interaction</button>
 
-            <div class="auto-controls" id="auto-controls">
-                <label>Start delay (ms): <input type="number" id="start-delay" value="1000"></label>
-                <label>Interval (ms): <input type="number" id="interval" value="2000"></label>
-                <label>Animation speed (ms): <input type="number" id="speed" value="1000"></label>
-                <label>Easing:
-                    <select id="easing">
-                        <option value="linear">Linear</option>
-                        <option value="ease-in-out">Ease In Out</option>
-                        <option value="ease-out">Ease Out</option>
-                    </select>
-                </label>
+        <!-- Modal Controls -->
+        <div class="modal" id="controls-modal">
+            <div class="modal-content">
+                <span class="close" onclick="toggleModal()">&times;</span>
+                <h3>Interaction Controls</h3>
+
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="interaction" value="auto">
+                        Auto-scroll
+                    </label>
+                    <label>
+                        <input type="radio" name="interaction" value="hijack" checked>
+                        Scroll hijacking
+                    </label>
+                </div>
+
+                <div class="auto-controls" id="auto-controls">
+                    <label>Start delay (ms): <input type="number" id="start-delay" value="1000"></label>
+                    <label>Interval (ms): <input type="number" id="interval" value="2000"></label>
+                    <label>Animation speed (ms): <input type="number" id="speed" value="1000"></label>
+                    <label>Easing:
+                        <select id="easing">
+                            <option value="linear">Linear</option>
+                            <option value="ease-in-out">Ease In Out</option>
+                            <option value="ease-out">Ease Out</option>
+                        </select>
+                    </label>
+                </div>
             </div>
         </div>
 
@@ -76,11 +84,25 @@
         const controls = document.querySelector('.controls');
         const autoControls = document.querySelector('#auto-controls');
 
-        let currentMode = 'auto';
+        let currentMode = 'hijack'; // Default to hijack
         let autoScrollInterval;
         let isHijacking = false;
         let scrollDirection = 1; // 1 for down, -1 for up
         let animationId;
+
+        // Modal functionality
+        function toggleModal() {
+            const modal = document.getElementById('controls-modal');
+            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('controls-modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
 
         // Prevent image dragging
         mock.addEventListener('dragstart', (e) => e.preventDefault());
@@ -171,6 +193,28 @@
         function setupScrollHijacking() {
             let previewTop = preview.offsetTop;
             let isInHijackZone = false;
+            let lockedScrollY = 0;
+            let hijackingDisabled = false;
+
+            function handleWheel(e) {
+                if (currentMode !== 'hijack' || !isInHijackZone || hijackingDisabled) return;
+
+                e.preventDefault(); // Prevent page scroll
+
+                const maxScroll = mask.scrollHeight - mask.clientHeight;
+                const newScrollTop = Math.max(0, Math.min(maxScroll, mask.scrollTop + e.deltaY));
+
+                mask.scrollTop = newScrollTop;
+
+                // Permanently disable hijacking when reaching bottom
+                if (newScrollTop >= maxScroll) {
+                    hijackingDisabled = true;
+                    isInHijackZone = false;
+                    enablePageScroll();
+                    // Remove the wheel listener completely
+                    window.removeEventListener('wheel', handleWheel, { passive: false });
+                }
+            }
 
             window.addEventListener('scroll', () => {
                 if (currentMode !== 'hijack') return;
@@ -178,22 +222,23 @@
                 const scrollY = window.scrollY;
                 const previewRect = preview.getBoundingClientRect();
 
-                if (previewRect.top <= 0 && !isInHijackZone) {
-                    // Enter hijack zone
-                    isInHijackZone = true;
-                    disablePageScroll();
-                    window.scrollTo(0, previewTop);
-                } else if (isInHijackZone) {
-                    // In hijack zone - move mock instead
-                    const maxScroll = mask.scrollHeight - mask.clientHeight;
-                    const scrollProgress = Math.min(scrollY - previewTop, maxScroll);
-                    mask.scrollTop = scrollProgress;
+                // Reset hijacking state when scrolling back to top
+                if (scrollY <= 0 && hijackingDisabled) {
+                    hijackingDisabled = false;
+                    isInHijackZone = false;
+                    mask.scrollTop = 0; // Reset mock to top
+                }
 
-                    if (scrollProgress >= maxScroll) {
-                        // Exit hijack zone
-                        isInHijackZone = false;
-                        enablePageScroll();
-                    }
+                if (previewRect.top <= 0 && !isInHijackZone && !hijackingDisabled) {
+                    // Enter hijack zone - lock page position and reset mock
+                    isInHijackZone = true;
+                    lockedScrollY = scrollY;
+                    mask.scrollTop = 0; // Reset mock to top
+                    disablePageScroll();
+                    window.scrollTo(0, lockedScrollY); // Lock page position
+
+                    // Add wheel listener when entering hijack zone
+                    window.addEventListener('wheel', handleWheel, { passive: false });
                 }
             });
         }
@@ -206,8 +251,8 @@
             document.body.style.overflow = '';
         }
 
-        // Initialize with auto-scroll
-        startAutoScroll();
+        // Initialize with scroll hijacking (default)
+        setupScrollHijacking();
     </script>
 </body>
 
