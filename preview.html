@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculating</title>
+    <title>Preview</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="preview.css">
 </head>
@@ -23,28 +23,50 @@
                 <h3>Interaction Controls</h3>
 
                 <div class="radio-group">
-                    <label>
-                        <input type="radio" name="interaction" value="auto">
-                        Auto-scroll
-                    </label>
-                    <label>
-                        <input type="radio" name="interaction" value="hijack" checked>
-                        Scroll hijacking
-                    </label>
+                    <div class="box">
+                        <label>
+                            <input type="radio" name="interaction" value="hijack" checked>
+                            Scroll hijacking
+                        </label>
+                        <hr>
+                        <label>
+                            <input type="radio" name="interaction" value="auto">
+                            Auto-scroll
+                        </label>
+                        <div class="auto-controls" id="auto-controls">
+                            <label>
+                                <span>Start delay (ms):</span>
+                                <input type="range" id="start-delay" min="0" max="10000" value="1000">
+                                <span class="slider-value" id="start-delay-value">1000</span>
+                            </label>
+                            <label>
+                                <span>Interval (ms):</span>
+                                <input type="range" id="interval" min="0" max="10000" value="2000">
+                                <span class="slider-value" id="interval-value">2000</span>
+                            </label>
+                            <label>
+                                <span>Animation speed (ms):</span>
+                                <input type="range" id="speed" min="0" max="10000" value="1000">
+                                <span class="slider-value" id="speed-value">1000</span>
+                            </label>
+
+                            <label>
+                                <span>Easing:</span>
+                                <select id="easing">
+                                    <option value="linear">Linear</option>
+                                    <option value="ease-in-out" selected>Ease In Out</option>
+                                    <option value="ease-out">Ease Out</option>
+                                    <option value="ease-in">Ease In</option>
+                                    <option value="ease-in-back">Ease In Back</option>
+                                    <option value="ease-out-back">Ease Out Back</option>
+                                    <option value="ease-in-out-back">Ease In Out Back</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="auto-controls" id="auto-controls">
-                    <label>Start delay (ms): <input type="number" id="start-delay" value="1000"></label>
-                    <label>Interval (ms): <input type="number" id="interval" value="2000"></label>
-                    <label>Animation speed (ms): <input type="number" id="speed" value="1000"></label>
-                    <label>Easing:
-                        <select id="easing">
-                            <option value="linear">Linear</option>
-                            <option value="ease-in-out">Ease In Out</option>
-                            <option value="ease-out">Ease Out</option>
-                        </select>
-                    </label>
-                </div>
+
             </div>
         </div>
 
@@ -54,15 +76,20 @@
                 <div class="mask" id="scrollable-mask">
                     <img src="images/mock.png" class="mock">
                 </div>
+
                 <img src="images/phone.png" alt="" class="phone">
+                <div class="expand body">Expand
+
+                </div>
 
             </div>
             <div class="text">
-                <h3>Your storefront, already taking shape</h3>
+                <h3>Your storefront, <br>already taking shape</h3>
                 <p class="body">We've auto-generated a draft of your membership offering using your existing content.
                 <p class="body">It's optimized for clarity, conversion, and brand alignment—so guests know exactly what
                     they're
                     signing up for.</p>
+                <div class="cta">Book a call</div>
             </div>
         </div>
         <div class="numbers">
@@ -108,6 +135,28 @@
         mock.addEventListener('dragstart', (e) => e.preventDefault());
         mock.addEventListener('mousedown', (e) => e.preventDefault());
 
+        // Update slider values display
+        function updateSliderValue(sliderId, valueId) {
+            const slider = document.getElementById(sliderId);
+            const valueDisplay = document.getElementById(valueId);
+            if (slider && valueDisplay) {
+                valueDisplay.textContent = slider.value;
+            }
+        }
+
+        // Add event listeners for sliders
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('start-delay').addEventListener('input', () => {
+                updateSliderValue('start-delay', 'start-delay-value');
+            });
+            document.getElementById('interval').addEventListener('input', () => {
+                updateSliderValue('interval', 'interval-value');
+            });
+            document.getElementById('speed').addEventListener('input', () => {
+                updateSliderValue('speed', 'speed-value');
+            });
+        });
+
         // Radio button controls
         document.querySelectorAll('input[name="interaction"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
@@ -125,10 +174,9 @@
         // Auto-scroll functionality
         function startAutoScroll() {
             const startDelay = parseInt(document.getElementById('start-delay').value);
-            const interval = parseInt(document.getElementById('interval').value);
 
             setTimeout(() => {
-                autoScrollInterval = setInterval(autoScroll, interval);
+                performAutoScroll();
             }, startDelay);
         }
 
@@ -141,26 +189,36 @@
             }
         }
 
-        function autoScroll() {
+        function performAutoScroll() {
+            if (currentMode !== 'auto') return;
+
+            const interval = parseInt(document.getElementById('interval').value);
             const speed = parseInt(document.getElementById('speed').value);
             const easing = document.getElementById('easing').value;
             const maxScroll = mask.scrollHeight - mask.clientHeight;
 
             let targetScroll = mask.scrollTop + (500 * scrollDirection);
+            let animationDuration = speed;
 
-            // Reverse direction at boundaries
+            // When reaching bottom, go all the way to top with 2x duration
             if (targetScroll >= maxScroll) {
-                targetScroll = maxScroll;
-                scrollDirection = -1;
+                targetScroll = 0; // Go to top instead of just reversing
+                scrollDirection = 1;
+                animationDuration = speed * 2; // 2x the animation speed
             } else if (targetScroll <= 0) {
                 targetScroll = 0;
                 scrollDirection = 1;
             }
 
-            animateScroll(mask.scrollTop, targetScroll, speed, easing);
+            animateScroll(mask.scrollTop, targetScroll, animationDuration, easing, () => {
+                // Callback when animation completes - schedule next scroll
+                if (currentMode === 'auto') {
+                    setTimeout(performAutoScroll, interval);
+                }
+            });
         }
 
-        function animateScroll(from, to, duration, easing) {
+        function animateScroll(from, to, duration, easing, onComplete) {
             const startTime = Date.now();
 
             function animate() {
@@ -175,6 +233,24 @@
                     case 'ease-out':
                         easedProgress = 1 - Math.pow(1 - progress, 3);
                         break;
+                    case 'ease-in':
+                        easedProgress = Math.pow(progress, 3);
+                        break;
+                    case 'ease-in-back':
+                        easedProgress = Math.pow(progress, 3) - progress * Math.sin(progress * Math.PI);
+                        break;
+                    case 'ease-out-back':
+                        easedProgress = 1 - Math.pow(1 - progress, 3) + (1 - progress) * Math.sin((1 - progress) * Math.PI);
+                        break;
+                    case 'ease-in-out-back':
+                        if (progress < 0.5) {
+                            const p = progress * 2;
+                            easedProgress = (Math.pow(p, 3) - p * Math.sin(p * Math.PI)) / 2;
+                        } else {
+                            const p = (progress - 0.5) * 2;
+                            easedProgress = 0.5 + (1 - Math.pow(1 - p, 3) + (1 - p) * Math.sin((1 - p) * Math.PI)) / 2;
+                        }
+                        break;
                     default:
                         easedProgress = progress;
                 }
@@ -183,6 +259,9 @@
 
                 if (progress < 1) {
                     animationId = requestAnimationFrame(animate);
+                } else {
+                    // Animation complete
+                    if (onComplete) onComplete();
                 }
             }
 
