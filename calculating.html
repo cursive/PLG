@@ -13,7 +13,7 @@
     <div class="page-container">
         <div class="left-column">
             <div class="logo">
-                <h1>table22</h1>
+                T22
             </div>
             <div class="title">
                 <h1>Cooking something up…</h1>
@@ -23,8 +23,8 @@
             </div>
             <div class="ai-box">
                 <div class="content">
-                    <div class="title">
-                        <img src="images/ai.svg" alt="" class="icon">
+                    <div class="ai-header">
+                        <img src="images/ai.svg" alt="" class="icon" style="filter: brightness(0) invert(0);">
                         <ai-title>Analyzing tone of voice...</ai-title>
                     </div>
                     <div class="ai-thoughts">on mobile it's docked to the bottom of the screen on mobile it's docked to
@@ -36,20 +36,24 @@
                     </div>
                     <div class="revenue">
                         <h2>Your projected revenue </h2>
-                        <div class="revline">
-                            <p>Projected annual revenue</p>
-                            <div class="text">Calculating</div>
-                            <img src="images/progress.svg" alt="">
+                        <div class="revline body">
+                            <p class="body">Projected monthly revenue</p>
+                            <div class="calc-container">
+                                <div class="text body">Calculating</div>
+                                <img src="images/progress.svg" alt="">
+                            </div>
                         </div>
 
 
-                        <div class="revline">
-                            <p>Projected annual revenue</p>
-                            <div class="text">Calculating</div>
-                            <img src="images/progress.svg" alt="">
+                        <div class="revline body">
+                            <p class="body">Projected annual revenue</p>
+                            <div class="calc-container">
+                                <div class="text body">Calculating</div>
+                                <img src="images/progress.svg" alt="">
+                            </div>
                         </div>
                     </div>
-                    <div class="revline"></div>
+
                 </div>
             </div>
         </div>
@@ -59,6 +63,43 @@
             </div>
         </div>
     </div>
+    <script>
+        // Typewriter effect for AI thoughts
+        const aiThoughts = document.querySelector('.ai-thoughts');
+        const thinkingText = `When I examine this restaurants website the first thing that stands out is the visual hierarchy. The homepage opens with a large hero image of plated dishes framed against a blurred background of the dining room. This communicates atmosphere and cuisine style. However the image carousel beneath it loads slowly which could affect first impressions especially on mobile. From a usability standpoint I recommend compressing or lazy loading these assets so that visitors get the core brand impression quickly.
+
+The navigation is straightforward with items like Menu About Us Reservations and Contact. Still the labels are generic. For example Menu could be more descriptive such as Dinner Menu or Seasonal Dishes to set expectations. I also notice that the navigation bar is fixed which aids usability but on smaller screens it collapses into a hamburger icon without clear labeling. Adding a Menu text label beside the icon could improve clarity for less tech savvy visitors.
+
+In terms of branding the restaurant emphasizes local sourcing and seasonal produce but that message is buried halfway down the About page. Visitors often skim so those differentiators should appear higher up ideally in the homepage hero text or as a tagline. The typography reinforces an upscale feel with serif headlines and lots of white space but body text in light gray can be hard to read against white backgrounds. Increasing contrast would improve accessibility.
+
+Reservations are handled through a third party booking widget embedded on the site. The integration works but the styling clashes with the restaurants branding with rounded pink buttons on an otherwise minimal dark toned design. Reskinning the widget or using a white label option would create a more seamless experience. I also notice there is no integration with calendar reminders which could reduce show up rates. Offering confirmation via email or SMS would help.
+
+From a search engine perspective the site lacks structured data for menus reviews and location. Adding schema markup would make the restaurants information more visible on Google particularly in near me searches. Metadata like title tags and descriptions are minimal and optimizing these could drive more local traffic.
+
+Finally the mobile experience is serviceable but not polished. Images resize correctly but text often runs long and forces horizontal scrolling in the menu section. Converting the PDF menus into HTML would solve this and improve accessibility. Overall the site succeeds in communicating brand tone but could be optimized for performance accessibility and discoverability.`;
+
+        function typeWriter(element, text, speed = 30) {
+            let i = 0;
+            element.innerHTML = '';
+
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+
+            type();
+        }
+
+        // Start the typewriter effect when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                typeWriter(aiThoughts, thinkingText, 25);
+            }, 1000); // Start after 1 second
+        });
+    </script>
 </body>
 
 </html>
